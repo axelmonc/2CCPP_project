@@ -5,14 +5,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(lieu_culturel
     src/main.cpp
-    src/Room.cpp
-    src/Event.cpp
-    src/Concert.cpp
-    src/Play.cpp
-    src/Screening.cpp
-    src/Workshop.cpp
-    src/Venue.cpp
-    src/DataManager.cpp
 )
 target_include_directories(lieu_culturel PRIVATE include)
 target_compile_options(lieu_culturel PRIVATE -Wall -Wextra)
