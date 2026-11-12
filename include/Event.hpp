@@ -28,6 +28,8 @@ public:
     int bookedSeats() const { return m_bookedSeats; }
     double price() const { return m_price; }
     int endMinutes() const;
+    int availableSeats() const;
+    bool book(int seats);
     virtual std::string type() const = 0;
     virtual void display(std::ostream& os) const;
     virtual void save(std::ostream& os) const = 0;

@@ -70,6 +70,18 @@ int Event::endMinutes() const {
     return hours * 60 + minutes + m_duration;
 }
 
+int Event::availableSeats() const {
+    return m_capacity - m_bookedSeats;
+}
+
+bool Event::book(int seats) {
+    if (seats <= 0 || seats > availableSeats()) {
+        return false;
+    }
+    m_bookedSeats += seats;
+    return true;
+}
+
 void Event::display(std::ostream& os) const {
     os << type() << " | " << m_title << " | " << m_date << " "
        << m_startTime << " | Salle " << m_roomId << " | "
