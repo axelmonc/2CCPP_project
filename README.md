@@ -5,11 +5,11 @@
 Depuis le dossier du projet :
 
 ```bash
-g++ -Wall -Wextra -std=c++17 main.cpp Room.cpp Event.cpp Concert.cpp Play.cpp Screening.cpp Workshop.cpp Venue.cpp DataManager.cpp -o lieu_culturel
+g++ -Wall -Wextra -std=c++17 -Iinclude src/*.cpp -o lieu_culturel
 ./lieu_culturel
 ```
 
-Le fichier `programme.txt` doit rester dans le même dossier que l'executable.
+Le fichier `programme.txt` doit rester à la racine du programme.
 
 ## Compilation avec CMake
 
