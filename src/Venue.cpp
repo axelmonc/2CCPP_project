@@ -55,6 +55,40 @@ void Venue::scheduleEvent(std::unique_ptr<Event> event) {
     m_events.push_back(std::move(event));
 }
 
+const Event* Venue::findEvent(const std::string& title) const {
+    for (const auto& event : m_events) {
+        if (event->title() == title) {
+            return &(*event);
+        }
+    }
+    return nullptr;
+}
+
+void Venue::displayProgramme() const {
+    if (m_events.empty()) {
+        std::cout << "Aucun evenement programme.\n";
+        return;
+    }
+    for (const auto& event : m_events) {
+        event->display(std::cout);
+        std::cout << '\n';
+    }
+}
+
+void Venue::displayEventsByDate(const std::string& date) const {
+    bool found = false;
+    for (const auto& event : m_events) {
+        if (event->date() == date) {
+            event->display(std::cout);
+            std::cout << '\n';
+            found = true;
+        }
+    }
+    if (!found) {
+        std::cout << "Aucun evenement a cette date.\n";
+    }
+}
+
 void Venue::displayRooms() const {
     for (const auto& room : m_rooms) {
         std::cout << "Salle " << room.id() << " - " << room.name() << " -capacite : " << room.capacity() << '\n';
