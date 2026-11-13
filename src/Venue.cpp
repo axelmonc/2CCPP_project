@@ -63,6 +63,14 @@ const Event* Venue::findEvent(const std::string& title) const {
     }
     return nullptr;
 }
+bool Venue::bookSeats(const std::string& title, const std::string& date, int seats) {
+    for (auto& event : m_events) {
+        if (event->title() == title && event->date() == date) {
+            return event->book(seats);
+        }
+    }
+    return false;
+}
 
 void Venue::displayProgramme() const {
     if (m_events.empty()) {
