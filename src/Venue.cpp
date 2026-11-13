@@ -103,5 +103,13 @@ void Venue::displayRooms() const {
     }
 }
 
+double Venue::totalTakings() const {
+    double total = 0.0;
+    for (const auto& event : m_events) {
+        total += event->price() * event->bookedSeats();
+    }
+    return total;
+}
+
 const std::vector<Room>& Venue::rooms() const { return m_rooms; }
 const std::vector<std::unique_ptr<Event>>& Venue::events() const { return m_events; }
