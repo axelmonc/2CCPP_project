@@ -15,6 +15,10 @@ class Venue {
         void scheduleEvent(std::unique_ptr<Event> event);
         bool bookSeats(const std::string& title, const std::string& date, int seats);
         double totalTakings() const;
+        void displayBusiestRooms() const;
+        std::vector<double> prices() const;
+        std::vector<int> durations() const;
+        std::vector<int> attendances() const;
         const Room* findRoom(int id) const;
         const Event* findEvent(const std::string& title) const;
         void displayProgramme() const;

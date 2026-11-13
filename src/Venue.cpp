@@ -1,6 +1,7 @@
 #include "Venue.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <map>
 
 void Venue::addRoom(const Room& room) {
     if (findRoom(room.id()) != nullptr) {
@@ -109,6 +110,59 @@ double Venue::totalTakings() const {
         total += event->price() * event->bookedSeats();
     }
     return total;
+}
+
+void Venue::displayBusiestRooms() const {
+    std::map<int, int> attendance;
+    for (const auto& room : m_rooms) {
+        attendance[room.id()] = 0;
+    }
+    for (const auto& event : m_events) {
+        attendance[event->roomId()] += event->bookedSeats();
+    }
+    int highest = 0;
+    for (const auto& item : attendance) {
+        if (item.second > highest) {
+            highest = item.second;
+        }
+    }
+    if (attendance.empty()) {
+        std::cout << "Aucune salle.\n";
+        return;
+    }
+    std::cout << "Salle(s) la/les plus frequentee(s) :\n";
+    for (const auto& item : attendance) {
+        if (item.second == highest) {
+            const Room* room = findRoom(item.first);
+            if (room != nullptr) {
+                std::cout << room->name() << " : " << item.second << " reservations\n";
+            }
+        }
+    }
+}
+
+std::vector<double> Venue::prices() const {
+    std::vector<double> result;
+    for (const auto& event : m_events) {
+        result.push_back(event->price());
+    }
+    return result;
+}
+
+std::vector<int> Venue::durations() const {
+    std::vector<int> result;
+    for (const auto& event : m_events) {
+        result.push_back(event->duration());
+    }
+    return result;
+}
+
+std::vector<int> Venue::attendances() const {
+    std::vector<int> result;
+    for (const auto& event : m_events) {
+        result.push_back(event->bookedSeats());
+    }
+    return result;
 }
 
 const std::vector<Room>& Venue::rooms() const { return m_rooms; }
