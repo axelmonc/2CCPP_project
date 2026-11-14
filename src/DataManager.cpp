@@ -1,4 +1,5 @@
 #include "DataManager.hpp"
+#include <fstream>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
@@ -31,4 +32,18 @@ std::vector<std::string> splitLine(const std::string& line) {
         fields.push_back(field);
     }
     return fields;
+}
+
+void saveVenue(const Venue& venue, const std::string& path) {
+    std::ofstream out{path}; // ouvre le fichier pour le modif
+    if (!out) {
+        throw std::runtime_error{"Impossible d'ouvrir le fichier : " + path};
+    }
+    for (const auto& room : venue.rooms()) {
+        out << "ROOM;" << room.id() << ';' << room.name()
+            << ';' << room.capacity() << '\n';
+    }
+    for (const auto& event : venue.events()) {
+        event->save(out);
+    }
 }
