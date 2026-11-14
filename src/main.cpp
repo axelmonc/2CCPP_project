@@ -1,3 +1,4 @@
+#include "Analytics.hpp"
 #include "DataManager.hpp"
 #include <fstream>
 #include <iostream>
@@ -5,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 class EndOfInput : public std::runtime_error {
 public:
@@ -40,6 +42,28 @@ double readDouble(const std::string& message) {
     return value;
 }
 
+void showStatistics(const Venue& venue) {
+    const std::vector<double> prices = venue.prices();
+    const std::vector<int> durations = venue.durations();
+    const std::vector<int> attendances = venue.attendances();
+
+    std::cout << "Recettes totales : " << venue.totalTakings() << " euros\n";
+    if (prices.empty()) {
+        std::cout << "Pas encore de donnees statistiques.\n";
+        return;
+    }
+    std::cout << "Prix - min : " << minimum(prices)
+              << ", max : " << maximum(prices)
+              << ", moyenne : " << average(prices) << '\n';
+    std::cout << "Durees - min : " << minimum(durations)
+              << ", max : " << maximum(durations)
+              << ", moyenne : " << average(durations) << " minutes\n";
+    std::cout << "Reservations - min : " << minimum(attendances)
+              << ", max : " << maximum(attendances)
+              << ", moyenne : " << average(attendances) << '\n';
+    venue.displayBusiestRooms();
+}
+
 int main() {
     Venue venue;
     bool canSave = true;
@@ -63,7 +87,9 @@ int main() {
                 << "1. Afficher le programme\n"
                 << "2. Rechercher un evenement par titre\n"
                 << "3. Afficher le programme d'une date\n"
+                << "4. Reserver des places\n"
                 << "5. Afficher les salles\n"
+                << "6. Statistiques et recettes\n"
                 << "8. Sauvegarder\n"
                 << "0. Quitter\n";
         try {
@@ -81,8 +107,19 @@ int main() {
                 }
             } else if (choice == 3) {
                 venue.displayEventsByDate(readText("Date (AAAA-MM-JJ) : "));
+            } else if (choice == 4) {
+                const std::string title = readText("Titre de l'evenement : ");
+                const std::string date = readText("Date (AAAA-MM-JJ) : ");
+                const int seats = readInt("Nombre de places : ");
+                if (venue.bookSeats(title, date, seats)) {
+                    std::cout << "Reservation confirmee.\n";
+                } else {
+                    std::cout << "Reservation refusee (evenement absent ou salle complete).\n";
+                }
             } else if (choice == 5) {
                 venue.displayRooms();
+            } else if (choice == 6) {
+                showStatistics(venue);
             } else if (choice == 8) {
                 if (!canSave) {
                     throw std::runtime_error{"Sauvegarde desactivee (fichier programme.txt invalide)"};
