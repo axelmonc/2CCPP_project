@@ -1,0 +1,6 @@
+ROOM;1;Grande salle;200
+ROOM;2;Petite salle;60
+CONCERT;Soiree jazz;2026-12-05;20:00;120;1;180;18.5;35;Blue Quartet;45
+PLAY;Le Malade imaginaire;2026-12-06;18:00;100;2;55;12;20;15
+SCREENING;Voyage dans le temps;2026-12-07;20:30;95;1;180;9.5;72;Tout public
+WORKSHOP;Initiation au theatre;2026-12-08;14:00;90;2;40;5;12;Camille Martin
