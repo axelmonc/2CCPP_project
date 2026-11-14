@@ -80,3 +80,30 @@ std::unique_ptr<Event> makeEvent(const std::string& tag,
 
     throw std::invalid_argument{"Type d'evenement inconnu ou champs invalides"};
 }
+
+
+
+std::unique_ptr<Venue> loadVenue(const std::string& path) {
+    std::ifstream in{path};
+    if (!in) {
+        throw std::runtime_error{"Impossible d'ouvrir le fichier : " + path};
+    }
+    std::unique_ptr<Venue> venue = std::make_unique<Venue>();
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.empty()) {
+            continue;
+        }
+        const std::vector<std::string> f = splitLine(line);
+        if (f.empty()) {
+            throw std::invalid_argument{"Ligne vide"};
+        }
+        if (f[0] == "ROOM") {
+            if (f.size() != 4) {
+                throw std::invalid_argument{"Nombre de champs invalide pour ROOM"};
+            }
+            venue->addRoom(Room{parseInt(f[1]), f[2], parseInt(f[3])});
+        }
+    }
+    return venue;
+}
