@@ -1,6 +1,8 @@
 #include "DataManager.hpp"
 #include "Concert.hpp"
 #include "Play.hpp"
+#include "Screening.hpp"
+#include "Workshop.hpp"
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -68,6 +70,12 @@ std::unique_ptr<Event> makeEvent(const std::string& tag,
     }
     if (tag == "PLAY" && f.size() == 10) {
         return std::make_unique<Play>(title, date, time, duration, roomId, capacity, price, booked, parseInt(f[9]));
+    }
+    if (tag == "SCREENING" && f.size() == 10) {
+        return std::make_unique<Screening>(title, date, time, duration, roomId, capacity, price, booked, f[9]);
+    }
+    if (tag == "WORKSHOP" && f.size() == 10) {
+        return std::make_unique<Workshop>(title, date, time, duration, roomId, capacity, price, booked, f[9]);
     }
 
     throw std::invalid_argument{"Type d'evenement inconnu ou champs invalides"};
