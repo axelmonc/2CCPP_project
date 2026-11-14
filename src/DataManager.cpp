@@ -40,10 +40,12 @@ void saveVenue(const Venue& venue, const std::string& path) {
         throw std::runtime_error{"Impossible d'ouvrir le fichier : " + path};
     }
     for (const auto& room : venue.rooms()) {
-        out << "ROOM;" << room.id() << ';' << room.name()
-            << ';' << room.capacity() << '\n';
+        out << "ROOM;" << room.id() << ';' << room.name() << ';' << room.capacity() << '\n';
     }
     for (const auto& event : venue.events()) {
         event->save(out);
+    }
+    if (!out) {
+        throw std::runtime_error{"Erreur pendant l'ecriture du fichier : " + path};
     }
 }
