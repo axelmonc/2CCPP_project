@@ -12,6 +12,7 @@ add_library(lieu_culturel_lib STATIC
     src/Screening.cpp
     src/Workshop.cpp
     src/DataManager.cpp
+    src/main.cpp
 )
 target_include_directories(lieu_culturel_lib PUBLIC include)
 target_compile_options(lieu_culturel_lib PUBLIC -Wall -Wextra)
