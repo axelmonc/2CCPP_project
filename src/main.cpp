@@ -50,7 +50,6 @@ int main() {
     } catch (const std::exception& e) {
         std::cerr << "Chargement non effectue : " << e.what() << '\n';
         std::cout << "Demarrage avec un programme vide.\n";
-        // Si le fichier existe mais est invalide, on ne l'ecrase pas.
         std::ifstream test{"programme.txt"};
         if (test) {
             canSave = false;
@@ -61,11 +60,30 @@ int main() {
     bool running = true;
     while (running) {
         std::cout << "\n===== LIEU CULTUREL =====\n"
-                  << "8. Sauvegarder\n"
-                  << "0. Quitter\n";
+                << "1. Afficher le programme\n"
+                << "2. Rechercher un evenement par titre\n"
+                << "3. Afficher le programme d'une date\n"
+                << "5. Afficher les salles\n"
+                << "8. Sauvegarder\n"
+                << "0. Quitter\n";
         try {
             const int choice = readInt("Choix : ");
-            if (choice == 8) {
+            if (choice == 1) {
+                venue.displayProgramme();
+            } else if (choice == 2) {
+                const std::string title = readText("Titre recherche : ");
+                const Event* event = venue.findEvent(title);
+                if (event == nullptr) {
+                    std::cout << "Evenement introuvable.\n";
+                } else {
+                    event->display(std::cout);
+                    std::cout << '\n';
+                }
+            } else if (choice == 3) {
+                venue.displayEventsByDate(readText("Date (AAAA-MM-JJ) : "));
+            } else if (choice == 5) {
+                venue.displayRooms();
+            } else if (choice == 8) {
                 if (!canSave) {
                     throw std::runtime_error{"Sauvegarde desactivee (fichier programme.txt invalide)"};
                 }
