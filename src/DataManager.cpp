@@ -90,24 +90,32 @@ std::unique_ptr<Venue> loadVenue(const std::string& path) {
     }
     std::unique_ptr<Venue> venue = std::make_unique<Venue>();
     std::string line;
+    int lineNumber = 0;
     while (std::getline(in, line)) {
+        ++lineNumber;
         if (line.empty()) {
             continue;
         }
-        const std::vector<std::string> f = splitLine(line);
-        if (f.empty()) {
-            throw std::invalid_argument{"Ligne vide"};
-        }
-        if (f[0] == "ROOM") {
-            if (f.size() != 4) {
-                throw std::invalid_argument{"Nombre de champs invalide pour ROOM"};
+        try {
+            const std::vector<std::string> f = splitLine(line);
+            if (f.empty()) {
+                throw std::invalid_argument{"Ligne vide"};
             }
-            venue->addRoom(Room{parseInt(f[1]), f[2], parseInt(f[3])});
-        } else {
-            if (f.size() < 10) {
-                throw std::invalid_argument{"Nombre de champs insuffisant pour un evenement"};
+            if (f[0] == "ROOM") {
+                if (f.size() != 4) {
+                    throw std::invalid_argument{"Nombre de champs invalide pour ROOM"};
+                }
+                venue->addRoom(Room{parseInt(f[1]), f[2], parseInt(f[3])});
+            } else {
+                if (f.size() < 10) {
+                    throw std::invalid_argument{"Nombre de champs insuffisant pour un evenement"};
+                }
+                venue->scheduleEvent(makeEvent(f[0], f));
             }
-            venue->scheduleEvent(makeEvent(f[0], f));
+        } catch (const std::exception& e) {
+            std::ostringstream message;
+            message << "Fichier " << path << ", ligne " << lineNumber << " : " << e.what();
+            throw std::runtime_error{message.str()};
         }
     }
     return venue;
