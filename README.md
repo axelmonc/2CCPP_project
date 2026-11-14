@@ -1,23 +1,25 @@
 # Application de gestion d'un lieu culturel
 
-## Compilation avec g++
+## Compilation
 
-Depuis le dossier du projet :
+### Windows (MinGW / MSYS2)
 
-```bash
-g++ -Wall -Wextra -std=c++17 -Iinclude src/*.cpp -o lieu_culturel
-./lieu_culturel
-```
-
-Le fichier `programme.txt` doit rester à la racine du programme.
-
-## Compilation avec CMake
-
-```bash
-cmake -S . -B build
+```powershell
+cmake -S . -B build -G "MinGW Makefiles" -DBUILD_TESTS=ON
 cmake --build build
-./build/lieu_culturel
+cd build
+ctest --output-on-failure
 ```
+
+### Linux / macOS
+
+```bash
+cmake -S . -B build -DBUILD_TESTS=ON
+cmake --build build
+cd build && ctest --output-on-failure
+```
+
+> Si le dossier `build` existe déjà avec une autre configuration, le supprimer avant de relancer
 
 ## Administration
 

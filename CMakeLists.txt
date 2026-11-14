@@ -17,17 +17,14 @@ add_library(lieu_culturel_lib STATIC
 target_include_directories(lieu_culturel_lib PUBLIC include)
 target_compile_options(lieu_culturel_lib PUBLIC -Wall -Wextra)
 
-# L'executable : seulement main.cpp
-add_executable(lieu_culturel src/main.cpp)
-target_link_libraries(lieu_culturel PRIVATE lieu_culturel_lib)
-
 # Tests (desactives par defaut : le build normal ne depend pas de GTest)
 option(BUILD_TESTS "Compiler les tests Google Test" OFF)
 if(BUILD_TESTS)
     enable_testing()
     include(FetchContent)
     FetchContent_Declare(googletest
-        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip)
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
     FetchContent_MakeAvailable(googletest)
 
     add_executable(unit_tests
