@@ -1,5 +1,9 @@
 #include "Analytics.hpp"
+#include "Concert.hpp"
 #include "DataManager.hpp"
+#include "Play.hpp"
+#include "Screening.hpp"
+#include "Workshop.hpp"
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -7,6 +11,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+const std::string ADMIN_CODE = "CULT";
 
 class EndOfInput : public std::runtime_error {
 public:
@@ -40,6 +46,41 @@ double readDouble(const std::string& message) {
         throw std::invalid_argument{"Veuillez entrer un nombre"};
     }
     return value;
+}
+
+void addEvent(Venue& venue) {
+    std::cout << "Type : 1 Concert | 2 Theatre | 3 Projection | 4 Atelier\n";
+    const int type = readInt("Votre choix : ");
+    const std::string title = readText("Titre : ");
+    const std::string date = readText("Date (AAAA-MM-JJ) : ");
+    const std::string time = readText("Heure (HH:MM) : ");
+    const int duration = readInt("Duree en minutes : ");
+    const int roomId = readInt("Identifiant de la salle : ");
+    const int capacity = readInt("Nombre de places a vendre : ");
+    const double price = readDouble("Prix d'une place : ");
+
+    if (type == 1) {
+        const std::string lineUp = readText("Artistes (separes par des virgules) : ");
+        const int soundCheck = readInt("Duree du sound-check en minutes : ");
+        venue.scheduleEvent(std::make_unique<Concert>(
+            title, date, time, duration, roomId, capacity, price, 0,
+            lineUp, soundCheck));
+    } else if (type == 2) {
+        const int interval = readInt("Duree de l'entracte en minutes : ");
+        venue.scheduleEvent(std::make_unique<Play>(
+            title, date, time, duration, roomId, capacity, price, 0, interval));
+    } else if (type == 3) {
+        const std::string rating = readText("Classification (ex : Tout public) : ");
+        venue.scheduleEvent(std::make_unique<Screening>(
+            title, date, time, duration, roomId, capacity, price, 0, rating));
+    } else if (type == 4) {
+        const std::string instructor = readText("Nom de l'animateur : ");
+        venue.scheduleEvent(std::make_unique<Workshop>(
+            title, date, time, duration, roomId, capacity, price, 0, instructor));
+    } else {
+        throw std::invalid_argument{"Type d'evenement invalide"};
+    }
+    std::cout << "Evenement ajoute.\n";
 }
 
 void showStatistics(const Venue& venue) {
@@ -90,6 +131,7 @@ int main() {
                 << "4. Reserver des places\n"
                 << "5. Afficher les salles\n"
                 << "6. Statistiques et recettes\n"
+                << "7. Administration : ajouter une salle ou un evenement\n"
                 << "8. Sauvegarder\n"
                 << "0. Quitter\n";
         try {
@@ -120,6 +162,25 @@ int main() {
                 venue.displayRooms();
             } else if (choice == 6) {
                 showStatistics(venue);
+            } else if (choice == 7) {
+                const std::string code = readText("Code administrateur : ");
+                if (code != ADMIN_CODE) {
+                    std::cout << "Code incorrect.\n";
+                } else {
+                    std::cout << "1. Ajouter une salle\n2. Ajouter un evenement\n";
+                    const int adminChoice = readInt("Choix : ");
+                    if (adminChoice == 1) {
+                        const int id = readInt("Identifiant : ");
+                        const std::string name = readText("Nom : ");
+                        const int capacity = readInt("Capacite : ");
+                        venue.addRoom(Room{id, name, capacity});
+                        std::cout << "Salle ajoutee.\n";
+                    } else if (adminChoice == 2) {
+                        addEvent(venue);
+                    } else {
+                        std::cout << "Choix invalide.\n";
+                    }
+                }
             } else if (choice == 8) {
                 if (!canSave) {
                     throw std::runtime_error{"Sauvegarde desactivee (fichier programme.txt invalide)"};
