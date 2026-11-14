@@ -103,6 +103,11 @@ std::unique_ptr<Venue> loadVenue(const std::string& path) {
                 throw std::invalid_argument{"Nombre de champs invalide pour ROOM"};
             }
             venue->addRoom(Room{parseInt(f[1]), f[2], parseInt(f[3])});
+        } else {
+            if (f.size() < 10) {
+                throw std::invalid_argument{"Nombre de champs insuffisant pour un evenement"};
+            }
+            venue->scheduleEvent(makeEvent(f[0], f));
         }
     }
     return venue;
