@@ -1,6 +1,14 @@
 ROOM;1;Grande salle;200
 ROOM;2;Petite salle;60
+ROOM;3;Studio;30
+SCREENING;Voyage dans le temps;2026-12-05;14:00;95;1;180;9.5;72;Tout public
 CONCERT;Soiree jazz;2026-12-05;20:00;120;1;180;18.5;35;Blue Quartet;45
-PLAY;Le Malade imaginaire;2026-12-06;18:00;100;2;55;12;20;15
-SCREENING;Voyage dans le temps;2026-12-07;20:30;95;1;180;9.5;72;Tout public
-WORKSHOP;Initiation au theatre;2026-12-08;14:00;90;2;40;5;12;Camille Martin
+WORKSHOP;Initiation au theatre;2026-12-05;10:00;90;3;30;5;30;Camille Martin
+PLAY;Le Malade imaginaire;2026-12-05;18:00;100;2;55;12;55;15
+PLAY;Cyrano de Bergerac;2026-12-05;19:40;120;2;60;14;18;20
+CONCERT;Nuit electro;2026-12-06;21:00;180;1;200;25;140;DJ Nova, Lumen;60
+SCREENING;Les Quatre Cents Coups;2026-12-06;15:00;99;1;150;8;40;Tout public
+SCREENING;Soiree frisson;2026-12-06;17:30;110;1;150;8;12;12 ans et plus
+PLAY;Antigone;2026-12-12;19:00;90;2;60;10;0;10
+WORKSHOP;Atelier ecriture;2026-12-12;14:00;120;3;25;15;8;Lea Dubois
+CONCERT;Concert de Noel;2026-12-20;17:00;90;2;60;0;22;Choeur municipal;30
