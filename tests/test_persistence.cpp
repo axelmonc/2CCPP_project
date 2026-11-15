@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <fstream>
 #include <gtest/gtest.h>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -129,4 +130,60 @@ TEST(Persistence, RejectsOverlappingEventsInFile) {
         "PLAY;A;2026-12-06;18:00;90;1;30;5;0;15\n"
         "PLAY;B;2026-12-06;18:30;90;1;30;5;0;15\n");
     EXPECT_NE(message.find("ligne 3"), std::string::npos);
+}
+
+// --- Messages precis, fichiers Windows, precision des prix ---
+
+TEST(Persistence, UnknownTypeIsNamedInMessage) {
+    const std::string message = loadAndGetError(
+        "type2.tmp", "ROOM;1;Salle;40\nBALLET;X;2026-12-06;18:00;90;1;30;5;0;15\n");
+    EXPECT_NE(message.find("BALLET"), std::string::npos);
+    EXPECT_NE(message.find("inconnu"), std::string::npos);
+}
+
+TEST(Persistence, WrongFieldCountIsReported) {
+    const std::string message = loadAndGetError(
+        "count.tmp", "ROOM;1;Salle;40\nCONCERT;X;2026-12-06;18:00;90;1;30;5;0;Groupe\n");
+    EXPECT_NE(message.find("CONCERT"), std::string::npos);
+    EXPECT_NE(message.find("11"), std::string::npos);
+    EXPECT_NE(message.find("ligne 2"), std::string::npos);
+}
+
+TEST(Persistence, NonNumericFieldIsNamed) {
+    const std::string message = loadAndGetError(
+        "field.tmp", "ROOM;1;Salle;40\nPLAY;X;2026-12-06;18:00;abc;1;30;5;0;15\n");
+    EXPECT_NE(message.find("duree"), std::string::npos);
+    EXPECT_NE(message.find("abc"), std::string::npos);
+}
+
+TEST(Persistence, InvalidDateMessageNamesTheDate) {
+    const std::string message = loadAndGetError(
+        "date.tmp", "ROOM;1;Salle;40\nPLAY;X;2026-02-30;18:00;90;1;30;5;0;15\n");
+    EXPECT_NE(message.find("Date invalide"), std::string::npos);
+    EXPECT_NE(message.find("2026-02-30"), std::string::npos);
+}
+
+TEST(Persistence, AcceptsWindowsLineEndings) {
+    const std::string path = writeTempFile(
+        "crlf.tmp",
+        "ROOM;1;Salle;40\r\n\r\nSCREENING;Film;2026-12-06;18:00;90;1;30;5;0;Tout public\r\n");
+    const auto loaded = loadVenue(path);
+    std::remove(path.c_str());
+    ASSERT_EQ(loaded->events().size(), 1u);
+    std::ostringstream out;
+    loaded->events()[0]->display(out);
+    EXPECT_NE(out.str().find("Tout public"), std::string::npos);
+    EXPECT_EQ(out.str().find('\r'), std::string::npos);
+}
+
+TEST(Persistence, RoundTripKeepsPricesExactly) {
+    Venue venue;
+    venue.addRoom(Room{1, "Salle", 100});
+    venue.scheduleEvent(std::make_unique<Play>("A", "2026-12-01", "10:00", 60, 1, 50, 12345.67, 0, 10));
+    venue.scheduleEvent(std::make_unique<Play>("B", "2026-12-02", "10:00", 60, 1, 50, 12.3456789, 0, 10));
+    saveVenue(venue, "prices.tmp");
+    const auto loaded = loadVenue("prices.tmp");
+    std::remove("prices.tmp");
+    EXPECT_DOUBLE_EQ(loaded->events()[0]->price(), 12345.67);
+    EXPECT_DOUBLE_EQ(loaded->events()[1]->price(), 12.3456789);
 }
