@@ -73,7 +73,9 @@ La date est au format `AAAA-MM-JJ` et l'heure au format `HH:MM`.
 
 ## Tests unitaires (Google Test)
 
-Désactivés par défaut. Google Test est téléchargé par CMake (connexion requise la première fois).
+Désactivés par défaut : la compilation normale ne dépend pas de Google Test.
+Google Test est téléchargé automatiquement par CMake (connexion internet requise la première fois).
+
 Les tests sont dans le dossier `tests/` :
 
 - `test_event.cpp` : validation des événements (date, heure, durée, capacité...) et réservation de places
@@ -81,17 +83,32 @@ Les tests sont dans le dossier `tests/` :
 - `test_analytics.cpp` : minimum, maximum et moyenne (fonctions génériques)
 - `test_persistence.cpp` : sauvegarde et chargement du fichier, gestion des erreurs (fichier et ligne)
 
-Google Test est téléchargé automatiquement par CMake (connexion internet requise la première fois).
+### Windows (MinGW / MSYS2)
 
-```bash
-cmake -S . -B build -DBUILD_TESTS=ON
+```powershell
+Remove-Item -Recurse -Force build
+cmake -S . -B build -G "MinGW Makefiles" -DBUILD_TESTS=ON
 cmake --build build --target unit_tests
 cd build
 ctest --output-on-failure
+cd ..
 ```
 
-Si le dossier `build` existe déjà avec une autre configuration, le supprimer avant de relancer.
+### Linux / macOS
+
+```bash
+rm -rf build
+cmake -S . -B build -DBUILD_TESTS=ON
+cmake --build build --target unit_tests
+cd build && ctest --output-on-failure && cd ..
+```
+
 Résultat attendu : `100% tests passed`.
+
+Le `Remove-Item` / `rm -rf build` évite les conflits si `build` existe déjà avec une autre configuration
+(par exemple un autre générateur). Sous Windows, ne pas oublier `-G "MinGW Makefiles"`,
+sinon CMake cherche `nmake` et échoue.
+
 Pour ajouter un fichier de test, le lister dans `add_executable(unit_tests ...)` de `CMakeLists.txt`.
 
 ## Documentation
