@@ -31,7 +31,9 @@ if(BUILD_TESTS)
     FetchContent_MakeAvailable(googletest)
 
     add_executable(unit_tests
+        tests/test_analytics.cpp
         tests/test_event.cpp
+        tests/test_persistence.cpp
         tests/test_venue.cpp)
     target_link_libraries(unit_tests PRIVATE lieu_culturel_lib GTest::gtest_main)
     include(GoogleTest)

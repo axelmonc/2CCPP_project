@@ -77,7 +77,9 @@ Désactivés par défaut. Google Test est téléchargé par CMake (connexion req
 Les tests sont dans le dossier `tests/` :
 
 - `test_event.cpp` : validation des événements (date, heure, durée, capacité...) et réservation de places
-- `test_venue.cpp` : salles, programmation, conflits d'horaires, réservations
+- `test_venue.cpp` : salles, programmation, conflits d'horaires, réservations, statistiques et affichages
+- `test_analytics.cpp` : minimum, maximum et moyenne (fonctions génériques)
+- `test_persistence.cpp` : sauvegarde et chargement du fichier, gestion des erreurs (fichier et ligne)
 
 Google Test est téléchargé automatiquement par CMake (connexion internet requise la première fois).
 
@@ -89,9 +91,9 @@ ctest --output-on-failure
 ```
 
 Si le dossier `build` existe déjà avec une autre configuration, le supprimer avant de relancer.
-Résultat attendu : `100% tests passed`. Pour ajouter un fichier de test, le lister dans `add_executable(unit_tests ...)` de `CMakeLists.txt`.
+Résultat attendu : `100% tests passed`.
+Pour ajouter un fichier de test, le lister dans `add_executable(unit_tests ...)` de `CMakeLists.txt`.
 
 ## Documentation
-
 - `UML.md` : diagramme de classes et cas d'utilisation
 - `DECISIONS.md` : décisions de conception et résultat de l'ajout d'un nouveau type d'événement
