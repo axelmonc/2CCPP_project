@@ -19,19 +19,29 @@
 5. Les événements sont stockés dans un seul vecteur polymorphe, ce qui évite de modifier `Venue` pour chaque nouveau type.
 6. Les statistiques utilisent des templates pour fonctionner avec `double` et `int`. `Analytics.hpp` ne dépend pas de `Venue` : elle travaille sur des `std::vector<T>` que `Venue` fournit (`prices()`, `durations()`, `attendances()`).
 7. Le chargement construit un nouvel objet `Venue`. En cas d'erreur, cet objet temporaire est détruit et aucun programme partiellement chargé n'est utilisé.
-8. Le fichier indique son type au premier champ. Le chargement choisit la classe concrète à partir de ce tag (fonction `makeEvent`, interne à `DataManager.cpp`).
+8. Le fichier indique son type au premier champ. Le chargement choisit la classe concrète à partir de ce tag (fonction `makeEvent`, interne à `DataManager.cpp` : elle est dans un espace de noms anonyme, comme `parseInt`, `parseDouble` et `splitLine`).
 9. Les données sont validées dans les constructeurs (`Room`, `Event` et ses classes filles) : un objet invalide ne peut pas exister. Les règles qui dépendent de plusieurs objets sont dans `Venue::scheduleEvent` : salle existante, capacité de l'événement inférieure ou égale à celle de la salle, titre unique par date, pas de chevauchement dans une même salle.
 10. Le projet est compilé en une bibliothèque statique `lieu_culturel_lib` (tout sauf `main.cpp`), liée à l'exécutable `lieu_culturel` et aux tests. Cela évite de compiler deux fois les mêmes fichiers.
 
-## Extensibilité : ajout d'un type Exhibition
+## Résultat de l'ajout d'un nouveau type d'événement : Workshop
 
-Pour ajouter un type `Exhibition`, il faudrait :
-- créer `include/Exhibition.hpp` et `src/Exhibition.cpp` ;
-- ajouter `src/Exhibition.cpp` dans la liste de `add_library` de `CMakeLists.txt` ;
-- ajouter la création de ce type dans la fonction `makeEvent` de `DataManager.cpp` ;
-- ajouter le choix et la saisie de ses informations dans `main.cpp`.
+Après la conception initiale (Concert, Play, Screening), nous avons ajouté un quatrième type, `Workshop` (atelier, avec un animateur). Le bilan, mesuré dans l'historique git :
 
-Il n'est pas nécessaire de modifier `Event`, `Venue`, `Room` ou les autres types d'événements. Dans cette version, `Workshop` sert déjà d'exemple d'un type ajouté au même mécanisme.
+| Fichier | Changement |
+| --- | --- |
+| `include/Workshop.hpp`, `src/Workshop.cpp` | créés (44 lignes au total) |
+| `src/DataManager.cpp` | +8 lignes : une branche `WORKSHOP` dans `makeEvent` |
+| `src/main.cpp` | une option « 4 Atelier » dans le menu et une branche de saisie dans `addEvent` |
+| `CMakeLists.txt` | +1 ligne : `src/Workshop.cpp` dans `add_library` |
+| `Event`, `Venue`, `Room`, `Analytics.hpp` | **aucune modification** |
+
+Conséquences concrètes :
+
+- `Venue` ne connaît que `Event` : programmation, détection des conflits, réservations, recettes et statistiques fonctionnent sans changement pour le nouveau type.
+- La sauvegarde fonctionne dès que `Workshop::save` est écrite ; seul le chargement a besoin d'une branche, parce qu'il doit choisir la classe à partir du tag.
+- Le point qui reste à modifier à la main est `makeEvent` (et le menu de `main.cpp`) : l'ajout d'un type n'est pas totalement automatique. Une table d'enregistrement des types (tag → fonction de création) supprimerait cette étape, mais serait disproportionnée pour quatre types.
+
+Pour un cinquième type (par exemple `Exhibition`), la même recette s'applique : créer les deux fichiers, les ajouter à `CMakeLists.txt`, ajouter la branche dans `makeEvent` et le choix dans `main.cpp`.
 
 ## Limites connues de cette version pédagogique
 
