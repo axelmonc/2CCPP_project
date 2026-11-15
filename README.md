@@ -1,25 +1,37 @@
 # Application de gestion d'un lieu culturel
 
+## Structure du projet
+
+```text
+.
+├── CMakeLists.txt
+├── programme.txt     données chargées et sauvegardées par le programme
+├── include/          fichiers .hpp
+├── src/              fichiers .cpp (dont main.cpp)
+└── tests/            tests unitaires Google Test
+```
+
 ## Compilation
 
 ### Windows (MinGW / MSYS2)
 
 ```powershell
-cmake -S . -B build -G "MinGW Makefiles" -DBUILD_TESTS=ON
+cmake -S . -B build -G "MinGW Makefiles"
 cmake --build build
-cd build
-ctest --output-on-failure
+.\build\lieu_culturel.exe
 ```
 
 ### Linux / macOS
 
 ```bash
-cmake -S . -B build -DBUILD_TESTS=ON
+cmake -S . -B build
 cmake --build build
-cd build && ctest --output-on-failure
+./build/lieu_culturel
 ```
 
 > Si le dossier `build` existe déjà avec une autre configuration, le supprimer avant de relancer
+
+Lancer l'exécutable **depuis la racine du projet** : `programme.txt` est lu et sauvegardé dans le dossier courant.
 
 ## Administration
 
@@ -46,6 +58,7 @@ WORKSHOP;titre;date;heure;duree;salle;capacite;prix;reservations;animateur
 ```
 
 Les champs texte ne doivent pas contenir le caractère `;`.
+La date est au format `AAAA-MM-JJ` et l'heure au format `HH:MM`.
 
 ## Fonctionnalites
 
@@ -53,7 +66,7 @@ Les champs texte ne doivent pas contenir le caractère `;`.
 - Affichage du programme à une date.
 - Programmation avec contrôle des conflits dans une même salle.
 - Réservation avec contrôle de la capacité.
-- Calcul des recettes et statistiques génériques.
+- Calcul des recettes et statistiques génériques (prix, durées, réservations, salles les plus fréquentées).
 - Ajout administratif de salles et d'événements.
 - Sauvegarde et rechargement du programme.
 - Les erreurs de lecture indiquent le fichier et le numéro de ligne.
