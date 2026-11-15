@@ -54,10 +54,30 @@ Event::Event(const std::string& title, const std::string& date,
     : m_title{title}, m_date{date}, m_startTime{startTime},
       m_duration{duration}, m_roomId{roomId}, m_capacity{capacity},
       m_bookedSeats{bookedSeats}, m_price{price} {
-    if (title.empty() || hasSeparator(title) || !validDate(date) || !validTime(startTime) ||
-        duration <= 0 || roomId <= 0 || capacity <= 0 ||
-        price < 0.0 || bookedSeats < 0 || bookedSeats > capacity) {
-        throw std::invalid_argument{"Informations d'evenement invalides (titre, date, heure, duree, salle, capacite, prix ou reservations)"};
+    if (title.empty() || hasSeparator(title)) {
+        throw std::invalid_argument{"Titre invalide (vide ou contenant ';') : \"" + title + "\""};
+    }
+    if (!validDate(date)) {
+        throw std::invalid_argument{"Date invalide (attendu AAAA-MM-JJ, jour existant) : \"" + date + "\""};
+    }
+    if (!validTime(startTime)) {
+        throw std::invalid_argument{"Heure invalide (attendu HH:MM) : \"" + startTime + "\""};
+    }
+    if (duration <= 0) {
+        throw std::invalid_argument{"Duree invalide (doit etre superieure a 0) : " + std::to_string(duration)};
+    }
+    if (roomId <= 0) {
+        throw std::invalid_argument{"Identifiant de salle invalide (doit etre superieur a 0) : " + std::to_string(roomId)};
+    }
+    if (capacity <= 0) {
+        throw std::invalid_argument{"Capacite invalide (doit etre superieure a 0) : " + std::to_string(capacity)};
+    }
+    if (price < 0.0) {
+        throw std::invalid_argument{"Prix invalide (ne peut pas etre negatif) : " + std::to_string(price)};
+    }
+    if (bookedSeats < 0 || bookedSeats > capacity) {
+        throw std::invalid_argument{"Reservations invalides (" + std::to_string(bookedSeats) +
+                                    ") : entre 0 et la capacite (" + std::to_string(capacity) + ")"};
     }
     if (endMinutes() > 24 * 60) {
         throw std::invalid_argument{"Un evenement ne peut pas finir apres minuit"};
@@ -87,4 +107,4 @@ void Event::display(std::ostream& os) const {
        << m_startTime << " | Salle " << m_roomId << " | "
        << m_bookedSeats << "/" << m_capacity << " places | "
        << m_price << " euros";
-}
+}
