@@ -76,7 +76,9 @@ La date est au format `AAAA-MM-JJ` et l'heure au format `HH:MM`.
 Les tests sont dans le dossier `tests/` :
 
 - `test_event.cpp` : validation des événements (date, heure, durée, capacité...) et réservation de places
-- `test_venue.cpp` : salles, programmation, conflits d'horaires, réservations
+- `test_venue.cpp` : salles, programmation, conflits d'horaires, réservations, statistiques et affichages
+- `test_analytics.cpp` : minimum, maximum et moyenne (fonctions génériques)
+- `test_persistence.cpp` : sauvegarde et chargement du fichier, gestion des erreurs (fichier et ligne)
 
 Google Test est téléchargé automatiquement par CMake (connexion internet requise la première fois).
 Les tests sont désactivés par défaut : la compilation normale ne dépend pas de Google Test.
@@ -113,4 +115,4 @@ TEST(NomDuGroupe, NomDuTest) {
 ```
 
 Assertions utiles : `EXPECT_EQ`, `EXPECT_TRUE`, `EXPECT_FALSE`, `EXPECT_DOUBLE_EQ`, `EXPECT_THROW`.
-Pour un nouveau fichier de test, l'ajouter dans la liste `add_executable(unit_tests ...)` de `CMakeLists.txt`.
+Pour un nouveau fichier de test, l'ajouter dans la liste `add_executable(unit_tests ...)` de `CMakeLists.txt`.  
