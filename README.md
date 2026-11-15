@@ -1,16 +1,5 @@
 # Application de gestion d'un lieu culturel
 
-## Structure du projet
-
-```text
-.
-├── CMakeLists.txt
-├── programme.txt     données chargées et sauvegardées par le programme
-├── include/          fichiers .hpp
-├── src/              fichiers .cpp (dont main.cpp)
-└── tests/            tests unitaires Google Test
-```
-
 ## Compilation
 
 ### Windows (MinGW / MSYS2)
@@ -32,6 +21,17 @@ cmake --build build
 > Si le dossier `build` existe déjà avec une autre configuration, le supprimer avant de relancer
 
 Lancer l'exécutable **depuis la racine du projet** : `programme.txt` est lu et sauvegardé dans le dossier courant.
+
+## Structure du projet
+
+```text
+.
+├── CMakeLists.txt
+├── programme.txt     données chargées et sauvegardées par le programme
+├── include/          fichiers .hpp
+├── src/              fichiers .cpp (dont main.cpp)
+└── tests/            tests unitaires Google Test
+```
 
 ## Administration
 
@@ -73,6 +73,7 @@ La date est au format `AAAA-MM-JJ` et l'heure au format `HH:MM`.
 
 ## Tests unitaires (Google Test)
 
+Désactivés par défaut. Google Test est téléchargé par CMake (connexion requise la première fois).
 Les tests sont dans le dossier `tests/` :
 
 - `test_event.cpp` : validation des événements (date, heure, durée, capacité...) et réservation de places
@@ -81,38 +82,18 @@ Les tests sont dans le dossier `tests/` :
 - `test_persistence.cpp` : sauvegarde et chargement du fichier, gestion des erreurs (fichier et ligne)
 
 Google Test est téléchargé automatiquement par CMake (connexion internet requise la première fois).
-Les tests sont désactivés par défaut : la compilation normale ne dépend pas de Google Test.
-
-### Lancer les tests (Windows, MinGW)
-
-```powershell
-cmake -S . -B build -G "MinGW Makefiles" -DBUILD_TESTS=ON
-cmake --build build --target unit_tests
-cd build
-ctest --output-on-failure
-cd ..
-```
-
-### Lancer les tests (Linux / macOS)
 
 ```bash
 cmake -S . -B build -DBUILD_TESTS=ON
 cmake --build build --target unit_tests
-cd build && ctest --output-on-failure
+cd build
+ctest --output-on-failure
 ```
 
 Si le dossier `build` existe déjà avec une autre configuration, le supprimer avant de relancer.
 Résultat attendu : `100% tests passed`.
+Pour ajouter un fichier de test, le lister dans `add_executable(unit_tests ...)` de `CMakeLists.txt`.
 
-### Ajouter un test
-
-Dans un fichier de `tests/`, ajouter un cas :
-
-```cpp
-TEST(NomDuGroupe, NomDuTest) {
-    EXPECT_EQ(1 + 1, 2);
-}
-```
-
-Assertions utiles : `EXPECT_EQ`, `EXPECT_TRUE`, `EXPECT_FALSE`, `EXPECT_DOUBLE_EQ`, `EXPECT_THROW`.
-Pour un nouveau fichier de test, l'ajouter dans la liste `add_executable(unit_tests ...)` de `CMakeLists.txt`.  
+## Documentation
+- `UML.md` : diagramme de classes et cas d'utilisation
+- `DECISIONS.md` : décisions de conception et résultat de l'ajout d'un nouveau type d'événement
